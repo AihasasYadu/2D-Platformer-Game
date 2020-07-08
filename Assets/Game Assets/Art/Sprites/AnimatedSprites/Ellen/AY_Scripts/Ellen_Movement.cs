@@ -3,35 +3,64 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 public class Ellen_Movement : MonoBehaviour
 {
     public Animator anime;
     public float speed = 2;
     public float height = 2;
-    private Rigidbody2D rb;
+    public float boxCollider2dCrouchSizeX = 0.89f;
+    public float boxCollider2dCrouchSizeY = 1.32f;
+    public float boxCollider2dCrouchOffsetX = -0.12f;
+    public float boxCollider2dCrouchOffsetY = 0.57f;
+    public float boxCollider2dSizeX = 0.59f;
+    public float boxCollider2dSizeY = 2.07f;
+    public float boxCollider2dOffsetX = 0.021f;
+    public float boxCollider2dOffsetY = 0.95f;
+    private int groundLayer = 9;
+    private int deathLine = 10;
+    private float delayTimeBy = 0.2f;
+    private int Jump_Count_Check;
+    private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
-    Collision2D collision;
-    BoxCollider2D bc;
+    private Collision2D collision;
+    private BoxCollider2D box_collider2D;
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer.Equals(9))
+        Debug.Log("In Collision Enter");
+        if (collision.gameObject.layer.Equals(groundLayer))
         {
+            Debug.Log("In Collision Enter IF");
             anime.SetBool("OnGround", true);
+            Jump_Count_Check = 0;
+            anime.Play("Ellen_Ground_Trigger", -1, 0f); 
+            Debug.Log("Leaving In Collision Enter IF");
         }
-        else
+        else if (collision.gameObject.layer.Equals(deathLine))
         {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+    private IEnumerator OnCollisionExit2D(Collision2D collision)
+    {
+        Debug.Log("In Collision Exit");
+        if (collision.gameObject.layer.Equals(groundLayer) && Jump_Count_Check >= 1)
+        {
+            Debug.Log("In Collision Exit If");
+            yield return new WaitForSeconds(delayTimeBy);
             anime.SetBool("OnGround", false);
+            Debug.Log("Leaving In Collision Exit if");
         }
     }
 
     private void Awake()
     {
-        // get a reference to the SpriteRenderer component on this gameObject
         mySpriteRenderer = GetComponent<SpriteRenderer>();
-        bc = GetComponent<BoxCollider2D>();
-        rb = GetComponentInParent<Rigidbody2D>();
+        box_collider2D = GetComponent<BoxCollider2D>();
+        rigidBody2d = GetComponentInParent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -50,49 +79,34 @@ public class Ellen_Movement : MonoBehaviour
             if (anime.GetBool("isCrouch") == true)
             {
                 anime.Play("Ellen_Crouch", -1, 0f);
-                bc.size = new Vector2(0.89f, 1.32f);
-                bc.offset = new Vector2(-0.12f, 0.57f);
+                box_collider2D.size = new Vector2(boxCollider2dCrouchSizeX, boxCollider2dCrouchSizeY);
+                box_collider2D.offset = new Vector2(boxCollider2dCrouchOffsetX, boxCollider2dCrouchOffsetY);
             }
             if (anime.GetBool("isCrouch") == false)
             {
-                bc.size = new Vector2(0.59f, 2.07f);
-                bc.offset = new Vector2(0.021f, 0.95f);
+                box_collider2D.size = new Vector2(boxCollider2dSizeX, boxCollider2dSizeY);
+                box_collider2D.offset = new Vector2(boxCollider2dOffsetX, boxCollider2dOffsetY);
             }
         }
     }
 
-    public void Jump()
+    private void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        { 
-            /*anime.Play("Ellen_Jump", -1, 0f);*/
-            anime.SetBool("Jump1", true);
-            Vert_Movement();
-            /*anime.SetBool("First_Jump", true);*/
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                Vert_Movement();
-                anime.SetBool("Second_Jump", true);
-            }
-            else if (Input.GetKeyUp(KeyCode.Space))
-            {
-                anime.SetBool("Second_Jump", false);
-            }
-        }
-        /*else if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && anime.GetBool("OnGround") && Jump_Count_Check < 2)
         {
-            anime.SetBool("J", false);
-        }*/
+            Debug.Log("Jump1 : " + Jump_Count_Check);
+            anime.SetBool("First_Jump", true);
+            rigidBody2d.AddForce(transform.parent.up * height, ForceMode2D.Force);
+            if (Input.GetKeyUp(KeyCode.Space))
+            {
+                /*StartCoroutine(Delay());*/
+                anime.SetBool("OnGround", false);
+            }
+            Jump_Count_Check++;
+        }
     }
 
-    public void Vert_Movement()
-    {
-        /*Vector2 jump = transform.parent.position;
-        jump.y += height * Time.deltaTime;*/
-        rb.AddForce(transform.up * height);
-    }
-
-    public void Horz_Movement()
+    private void Horz_Movement()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         anime.SetFloat("Speed", Mathf.Abs(horizontal));
