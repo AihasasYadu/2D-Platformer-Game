@@ -1,10 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Ellen_Movement : MonoBehaviour
 {
     public Animator anime;
+    public float speed = 2;
+    public float height = 2;
+    private Rigidbody2D rb;
     private SpriteRenderer mySpriteRenderer;
     Collision2D collision;
     BoxCollider2D bc;
@@ -26,6 +31,7 @@ public class Ellen_Movement : MonoBehaviour
         // get a reference to the SpriteRenderer component on this gameObject
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         bc = GetComponent<BoxCollider2D>();
+        rb = GetComponentInParent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -58,12 +64,14 @@ public class Ellen_Movement : MonoBehaviour
     public void Jump()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-        {
+        { 
             /*anime.Play("Ellen_Jump", -1, 0f);*/
             anime.SetBool("Jump1", true);
+            Vert_Movement();
             /*anime.SetBool("First_Jump", true);*/
             if (Input.GetKeyDown(KeyCode.Space))
             {
+                Vert_Movement();
                 anime.SetBool("Second_Jump", true);
             }
             else if (Input.GetKeyUp(KeyCode.Space))
@@ -77,19 +85,32 @@ public class Ellen_Movement : MonoBehaviour
         }*/
     }
 
+    public void Vert_Movement()
+    {
+        /*Vector2 jump = transform.parent.position;
+        jump.y += height * Time.deltaTime;*/
+        rb.AddForce(transform.up * height);
+    }
+
     public void Horz_Movement()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         anime.SetFloat("Speed", Mathf.Abs(horizontal));
+        Direction(horizontal);
+        Vector2 pos = transform.parent.position;
+        pos.x += horizontal * speed * Time.deltaTime;
+        transform.parent.position = pos;
+    }
 
-        if (horizontal < 0)
+    private void Direction(float x)
+    {
+        if (x < 0)
         {
             mySpriteRenderer.flipX = true;
         }
-        else if (horizontal > 0)
+        else if (x > 0)
         {
             mySpriteRenderer.flipX = false;
         }
     }
-
 }
