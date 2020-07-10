@@ -22,7 +22,7 @@ public class Ellen_Movement : MonoBehaviour
     public float boxCollider2dOffsetY = 0.95f;
     private int groundLayer = 9;
     private int deathLine = 10;
-    private float delayTimeBy = 0.2f;
+    private float delayTimeBy = 0;
     private int Jump_Count_Check;
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
@@ -45,7 +45,7 @@ public class Ellen_Movement : MonoBehaviour
 
     private IEnumerator OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.layer.Equals(groundLayer) && Jump_Count_Check >= 1)
+        if (collision.gameObject.layer.Equals(groundLayer)/* && Jump_Count_Check >= 1*/)
         {
             yield return new WaitForSeconds(delayTimeBy);
             anime.SetBool("OnGround", false);
@@ -88,17 +88,25 @@ public class Ellen_Movement : MonoBehaviour
 
     private void Jump()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && anime.GetBool("OnGround") && Jump_Count_Check < 2)
+        if (Jump_Count_Check < 2)
         {
-            /*Debug.Log("Jump1 : " + Jump_Count_Check);*/
-            anime.SetBool("First_Jump", true);
-            rigidBody2d.AddForce(transform.parent.up * height, ForceMode2D.Force);
-            /*if (Input.GetKeyUp(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && anime.GetBool("OnGround") && Jump_Count_Check < 2)
             {
-                StartCoroutine(Delay());
+                anime.SetBool("First_Jump", true);
+                rigidBody2d.AddForce(transform.parent.up * height, ForceMode2D.Force);
                 anime.SetBool("OnGround", false);
-            }*/
-            Jump_Count_Check++;
+                Jump_Count_Check++;
+            }
+            else if (Input.GetKeyDown(KeyCode.Space) && !anime.GetBool("OnGround") && (Jump_Count_Check < 2 && Jump_Count_Check > 0))
+            {
+                anime.SetBool("First_Jump", true);
+                rigidBody2d.AddForce(transform.parent.up * height, ForceMode2D.Force);
+                Jump_Count_Check++;
+            }
+        }
+        else
+        {
+            Jump_Count_Check = 0;
         }
     }
 
