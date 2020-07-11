@@ -8,8 +8,10 @@ using UnityEngine.SocialPlatforms.Impl;
 
 public class Ellen_Movement : MonoBehaviour
 {
+    //Public Variables
     public ScoreController scoreController;
     public Animator anime;
+    public int health = 100;
     public float speed = 2;
     public float height = 2;
     public float boxCollider2dCrouchSizeX = 0.89f;
@@ -20,6 +22,9 @@ public class Ellen_Movement : MonoBehaviour
     public float boxCollider2dSizeY = 2.07f;
     public float boxCollider2dOffsetX = 0.021f;
     public float boxCollider2dOffsetY = 0.95f;
+/*-------------------------------------------------------------*/
+
+    //Private Variables
     private int groundLayer = 9;
     private int deathLine = 10;
     private float delayTimeBy = 0;
@@ -31,7 +36,7 @@ public class Ellen_Movement : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer.Equals(groundLayer))
+        if (collision.gameObject.layer.Equals(groundLayer) && !anime.GetBool("Death"))
         {
             anime.SetBool("OnGround", true);
             Jump_Count_Check = 0;
@@ -45,7 +50,7 @@ public class Ellen_Movement : MonoBehaviour
 
     private IEnumerator OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.layer.Equals(groundLayer)/* && Jump_Count_Check >= 1*/)
+        if (collision.gameObject.layer.Equals(groundLayer))
         {
             yield return new WaitForSeconds(delayTimeBy);
             anime.SetBool("OnGround", false);
@@ -60,11 +65,14 @@ public class Ellen_Movement : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        Horz_Movement();
-        Jump();
-        Crouch();
+        if (!anime.GetBool("Death"))
+        {
+            Horz_Movement();
+            Jump();
+            Crouch();
+        }
     }
 
     private void Crouch()
@@ -134,7 +142,22 @@ public class Ellen_Movement : MonoBehaviour
 
     public void PickUp()
     {
-        Debug.Log("Picked Up Key");
         scoreController.ScoreUpdate(10);
+    }
+
+    public void DecreaseHealth(int decreaseHealthBy)
+    {
+        health -= decreaseHealthBy;
+        if(health <= 0)
+        {
+            KillPlayer();
+        }
+    }
+
+    private void KillPlayer()
+    {
+        anime.Play("Ellen_Death", -1, 0f);
+        anime.SetBool("Death", true);
+        rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
     }
 }
