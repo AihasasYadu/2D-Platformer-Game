@@ -10,6 +10,9 @@ public class Level_Over_Controller : MonoBehaviour
     {
         if (collision.gameObject.GetComponent<Ellen_Movement>() != null)
         {
+            Ellen_Movement characterScript = collision.gameObject.GetComponentInChildren<Ellen_Movement>();
+            PlayerPrefs.SetInt("PlayerHealth", characterScript.health);
+            PlayerPrefs.SetInt("CurrentScore", characterScript.score);
             SceneManager.LoadScene(nextScene);
         }
     }

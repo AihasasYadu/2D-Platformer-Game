@@ -10,7 +10,7 @@ public class EnemyController : MonoBehaviour
     public GameObject player;
     private Vector2 pos;
     private Animator chomperAnim;
-    private int directionControl = 1;
+    public int directionControl;
     private int movementLimit = 12;
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
@@ -40,6 +40,7 @@ public class EnemyController : MonoBehaviour
         {
             chomperAnim.SetBool("isCharacterNear", true);
             PlayerDirection();
+            Direction(directionControl);
         }
     }
 
@@ -55,14 +56,14 @@ public class EnemyController : MonoBehaviour
     {
         //characterScript = GetComponent<Ellen_Movement>();
         chomperAnim = GetComponent<Animator>();
-        rigidBody2d = GetComponentInParent<Rigidbody2D>();
+        rigidBody2d = GetComponent<Rigidbody2D>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         characterScript = player.GetComponent<Ellen_Movement>();
     }
 
     private void Update()
     {
-        if (characterScript.health > 0)
+        if (/*characterScript.health > 0 && */!chomperAnim.GetBool("isCharacterNear"))
         {
             Move();
         }
@@ -94,9 +95,9 @@ public class EnemyController : MonoBehaviour
 
     private void Move()
     {
-        pos = transform.parent.position;
+        pos = transform.position;
         pos.x += directionControl * enemySpeed * Time.deltaTime;
-        transform.parent.position = pos;
+        transform.position = pos;
         Direction(directionControl);
         chomperAnim.SetInteger("Speed", enemySpeed);
     }

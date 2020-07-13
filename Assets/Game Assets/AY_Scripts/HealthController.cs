@@ -8,6 +8,10 @@ public class HealthController : MonoBehaviour
     private TextMeshProUGUI healthText;
     public Ellen_Movement gameCharacter;
 
+    private void Awake()
+    {
+        gameCharacter.health = PlayerPrefs.GetInt("PlayerHealth");
+    }
     private void Start()
     {
         /*gameCharacter = GetComponent<Ellen_Movement>();*/

@@ -5,17 +5,25 @@ using TMPro;
 
 public class ScoreController : MonoBehaviour
 {
+    public Ellen_Movement characterScript;
     private TextMeshProUGUI scoreText;
     private int score = 0;
 
+    private void Awake()
+    {
+        characterScript.score = PlayerPrefs.GetInt("CurrentScore");
+        score = characterScript.score;
+    }
     private void Start()
     {
         scoreText = GetComponent<TextMeshProUGUI>();
+        scoreText.text = "Score : " + score;
     }
 
     public void ScoreUpdate(int increment)
     {
         score += increment;
+        characterScript.score = score;
         RefreshGUI();
     }
 

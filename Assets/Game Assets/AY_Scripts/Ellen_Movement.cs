@@ -10,10 +10,13 @@ public class Ellen_Movement : MonoBehaviour
 {
     //Public Variables
     public ScoreController scoreController;
+    public GameOverController gameOverController;
     public Animator anime;
     public int health = 100;
-    public float speed = 2;
     public float height = 2;
+    public int score;
+    public int walkSpeed;
+    public int sprintSpeed;
     public float boxCollider2dCrouchSizeX = 0.89f;
     public float boxCollider2dCrouchSizeY = 1.32f;
     public float boxCollider2dCrouchOffsetX = -0.12f;
@@ -22,12 +25,13 @@ public class Ellen_Movement : MonoBehaviour
     public float boxCollider2dSizeY = 2.07f;
     public float boxCollider2dOffsetX = 0.021f;
     public float boxCollider2dOffsetY = 0.95f;
-/*-------------------------------------------------------------*/
+    /*-------------------------------------------------------------*/
 
     //Private Variables
+    private float speed;
+    private float directionControl;
     private int groundLayer = 9;
     private int deathLine = 10;
-    private float delayTimeBy = 0;
     private int Jump_Count_Check;
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
@@ -44,21 +48,23 @@ public class Ellen_Movement : MonoBehaviour
         }
         else if (collision.gameObject.layer.Equals(deathLine))
         {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            gameOverController.GameOverOverlay();
+            anime.SetBool("Death", true);
+            /*SceneManager.LoadScene(SceneManager.GetActiveScene().name);*/
         }
     }
 
-    private IEnumerator OnCollisionExit2D(Collision2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.layer.Equals(groundLayer))
         {
-            yield return new WaitForSeconds(delayTimeBy);
             anime.SetBool("OnGround", false);
         }
     }
 
     private void Awake()
     {
+        PlayerPrefs.GetInt("PlayerLives", health);
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         box_collider2D = GetComponent<BoxCollider2D>();
         rigidBody2d = GetComponentInParent<Rigidbody2D>();
@@ -69,7 +75,7 @@ public class Ellen_Movement : MonoBehaviour
     {
         if (!anime.GetBool("Death"))
         {
-            Horz_Movement();
+            HorzMovement();
             Jump();
             Crouch();
         }
@@ -118,13 +124,27 @@ public class Ellen_Movement : MonoBehaviour
         }
     }
 
-    private void Horz_Movement()
+    private void HorzMovement()
     {
-        float horizontal = Input.GetAxisRaw("Horizontal");
-        anime.SetFloat("Speed", Mathf.Abs(horizontal));
-        Direction(horizontal);
+        float horzSpeed = 0.5f;
+        if(Input.GetKey(KeyCode.LeftShift))
+        {
+            horzSpeed = 1;
+            speed = sprintSpeed;
+        }
+        else
+        {
+            speed = walkSpeed;
+        }
+        directionControl = Input.GetAxisRaw("Horizontal");
+        if (directionControl == 0)
+        {
+            horzSpeed = 0;
+        }
+        anime.SetFloat("Speed", horzSpeed);
+        Direction(directionControl);
         Vector2 pos = transform.parent.position;
-        pos.x += horizontal * speed * Time.deltaTime;
+        pos.x += directionControl * speed * Time.deltaTime;
         transform.parent.position = pos;
     }
 
@@ -159,5 +179,6 @@ public class Ellen_Movement : MonoBehaviour
         anime.Play("Ellen_Death", -1, 0f);
         anime.SetBool("Death", true);
         rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+        gameOverController.GameOverOverlay();
     }
 }
