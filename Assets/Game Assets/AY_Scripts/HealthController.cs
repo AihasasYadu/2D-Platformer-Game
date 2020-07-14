@@ -6,6 +6,7 @@ using TMPro;
 public class HealthController : MonoBehaviour
 {
     private TextMeshProUGUI healthText;
+
     public Ellen_Movement gameCharacter;
 
     private void Awake()

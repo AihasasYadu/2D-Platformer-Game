@@ -14,9 +14,9 @@ public class Ellen_Movement : MonoBehaviour
     public Animator anime;
     public int health = 100;
     public float height = 2;
-    public int score;
     public int walkSpeed;
     public int sprintSpeed;
+    public int score;
     public float boxCollider2dCrouchSizeX = 0.89f;
     public float boxCollider2dCrouchSizeY = 1.32f;
     public float boxCollider2dCrouchOffsetX = -0.12f;

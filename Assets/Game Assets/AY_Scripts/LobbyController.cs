@@ -15,7 +15,6 @@ public class LobbyController : MonoBehaviour
         button2.onClick.AddListener(LoadLevel);
         button3.onClick.AddListener(LoadLevel);
     }
-
     private void LoadLevel()
     {
         PlayerPrefs.SetInt("PlayerHealth", 100);

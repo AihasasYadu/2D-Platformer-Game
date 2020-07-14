@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    //Public Variables
     public int weakenPlayerBy;
     public int enemySpeed;
-    private Ellen_Movement characterScript;
     public GameObject player;
+    public int directionControl;
+    /*-------------------------------------------------------------*/
+
+    //Private Variables
     private Vector2 pos;
     private Animator chomperAnim;
-    public int directionControl;
+    private Ellen_Movement characterScript;
     private int movementLimit = 12;
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;

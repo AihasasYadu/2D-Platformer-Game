@@ -5,7 +5,11 @@ using TMPro;
 
 public class ScoreController : MonoBehaviour
 {
+    //Public Variables
     public Ellen_Movement characterScript;
+    /*-------------------------------------------------------------*/
+
+    //Private Variables
     private TextMeshProUGUI scoreText;
     private int score = 0;
 
