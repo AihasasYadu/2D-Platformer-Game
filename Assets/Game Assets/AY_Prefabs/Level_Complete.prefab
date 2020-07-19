@@ -71,7 +71,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74e01657399c5164e928f27294106c53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextScene: Level 2
+  levelFinished: {fileID: 0}
+  overlaySpeed: 2000
+  overlayPositioned: 0
 --- !u!212 &6124375726515954537
 SpriteRenderer:
   m_ObjectHideFlags: 0

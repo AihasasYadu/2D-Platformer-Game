@@ -18,11 +18,6 @@ public class GameOverController : MonoBehaviour
     private bool positioned;
     private bool gameOverIMG_Positoned;
 
-    private void Awake()
-    {
-        restartButton.onClick.AddListener(ReloadLevel);
-        lobbyButton.onClick.AddListener(LoadLobby);
-    }
     private void Start()
     {
         gameOver = GetComponent<Image>();
@@ -72,17 +67,5 @@ public class GameOverController : MonoBehaviour
             positioned = true;
         }
         lobbyButton.transform.localPosition = pos;
-    }
-
-    private void ReloadLevel()
-    {
-        PlayerPrefs.SetInt("PlayerHealth", 100);
-        PlayerPrefs.SetInt("CurrentScore", 0);
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(currentScene.buildIndex);
-    }
-    private void LoadLobby()
-    {
-        SceneManager.LoadScene(0);
     }
 }

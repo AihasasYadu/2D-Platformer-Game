@@ -5,14 +5,13 @@ using UnityEngine.UI;
 
 public class LevelSelectorController : MonoBehaviour
 {
+    public int levelSelectorSpeed;
+
     [HideInInspector]
     public bool isButtonClicked;
     private Image levelSelector;
     private Vector2 pos;
-    private void Awake()
-    {
-        
-    }
+
     private void Start()
     {
         levelSelector = gameObject.GetComponent<Image>();
@@ -25,7 +24,7 @@ public class LevelSelectorController : MonoBehaviour
     }
     private void Move()
     {
-        pos.x += 1 * 1000 * Time.deltaTime;
+        pos.x += 1 * levelSelectorSpeed * Time.deltaTime;
         levelSelector.rectTransform.localPosition = pos;
     }
     private bool isInCenter()

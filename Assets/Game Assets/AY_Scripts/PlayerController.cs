@@ -11,23 +11,22 @@ public class PlayerController : MonoBehaviour
     //Public Variables
     public ScoreController scoreController;
     public GameOverController gameOverController;
-    public Animator anime;
     public float height = 2;
     public int walkSpeed;
     public int sprintSpeed;
 
-    [HideInInspector]
-    public int health = 100;
-    public int levelIndex;
-    public int score;
-    public float boxCollider2dCrouchSizeX = 0.89f;
-    public float boxCollider2dCrouchSizeY = 1.32f;
-    public float boxCollider2dCrouchOffsetX = -0.12f;
-    public float boxCollider2dCrouchOffsetY = 0.57f;
-    public float boxCollider2dSizeX = 0.59f;
-    public float boxCollider2dSizeY = 2.07f;
-    public float boxCollider2dOffsetX = 0.021f;
-    public float boxCollider2dOffsetY = 0.95f;
+    [HideInInspector] public int health = 100;
+    [HideInInspector] public int levelIndex;
+    [HideInInspector] public int score;
+    [HideInInspector] public float boxCollider2dCrouchSizeX = 0.89f;
+    [HideInInspector] public float boxCollider2dCrouchSizeY = 1.32f;
+    [HideInInspector] public float boxCollider2dCrouchOffsetX = -0.12f;
+    [HideInInspector] public float boxCollider2dCrouchOffsetY = 0.57f;
+    [HideInInspector] public float boxCollider2dSizeX = 0.59f;
+    [HideInInspector] public float boxCollider2dSizeY = 2.07f;
+    [HideInInspector] public float boxCollider2dOffsetX = 0.021f;
+    [HideInInspector] public float boxCollider2dOffsetY = 0.95f;
+    [HideInInspector] public bool freeze;
     /*-------------------------------------------------------------*/
 
     //Private Variables
@@ -36,6 +35,7 @@ public class PlayerController : MonoBehaviour
     private int groundLayer = 9;
     private int deathLine = 10;
     private int Jump_Count_Check;
+    private Animator anime;
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
     private BoxCollider2D box_collider2D;
@@ -46,16 +46,22 @@ public class PlayerController : MonoBehaviour
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         box_collider2D = GetComponent<BoxCollider2D>();
         rigidBody2d = GetComponent<Rigidbody2D>();
-
+        anime = GetComponent<Animator>();
+        freeze = false;
     }
 
     private void Update()
     {
-        if (!anime.GetBool("Death"))
+        if (!anime.GetBool("Death") && !freeze)
         {
             HorzMovement();
             Jump();
             Crouch();
+        }
+        else
+        {
+            anime.Play("Ellen_Idle", -1, 0f);
+            FreezePlayer();
         }
     }
 
@@ -184,11 +190,14 @@ public class PlayerController : MonoBehaviour
     {
         anime.Play("Ellen_Death", -1, 0f);
         anime.SetBool("Death", true);
-        rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+        FreezePlayer();
         PlayerPrefs.SetInt("LastLevel", SceneManager.GetActiveScene().buildIndex);
-        Debug.Log("Index : " + SceneManager.GetActiveScene().buildIndex);
         gameOverController.playerDead = true;
         gameOverController.GameOverOverlay();
+    }
+    public void FreezePlayer()
+    {
+        rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
