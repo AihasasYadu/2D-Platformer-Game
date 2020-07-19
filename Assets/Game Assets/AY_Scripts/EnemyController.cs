@@ -4,16 +4,17 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
+    //Public Variables
     public int weakenPlayerBy;
     public int enemySpeed;
-    private Ellen_Movement characterScript;
     public GameObject player;
+    public int directionControl;
+    /*-------------------------------------------------------------*/
+
+    //Private Variables
     private Vector2 pos;
     private Animator chomperAnim;
-<<<<<<< HEAD
-    public int directionControl;
-=======
->>>>>>> d1094e4... Re-Modelled the whole lobby scene
+    private PlayerController characterScript;
     private int movementLimit = 12;
     private SpriteRenderer mySpriteRenderer;
     private int playerLayer = 8;

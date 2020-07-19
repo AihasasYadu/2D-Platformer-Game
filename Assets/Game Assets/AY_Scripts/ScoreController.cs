@@ -5,15 +5,11 @@ using TMPro;
 
 public class ScoreController : MonoBehaviour
 {
-<<<<<<< HEAD
-    public Ellen_Movement characterScript;
-=======
     //Public Variables
     public PlayerController characterScript;
     /*-------------------------------------------------------------*/
 
     //Private Variables
->>>>>>> d1094e4... Re-Modelled the whole lobby scene
     private TextMeshProUGUI scoreText;
     private int score = 0;
 

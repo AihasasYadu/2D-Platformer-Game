@@ -17,7 +17,6 @@ public class LobbyController : MonoBehaviour
         levelSelectButton.onClick.AddListener(LevelSelector);
         quitButton.onClick.AddListener(QuitGame);
     }
-
     private void LoadLevel()
     {
         int level = 1;

@@ -6,12 +6,7 @@ using TMPro;
 public class HealthController : MonoBehaviour
 {
     private TextMeshProUGUI healthText;
-<<<<<<< HEAD
-    public Ellen_Movement gameCharacter;
-=======
-
     public PlayerController gameCharacter;
->>>>>>> d1094e4... Re-Modelled the whole lobby scene
 
     private void Awake()
     {
