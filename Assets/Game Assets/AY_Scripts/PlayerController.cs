@@ -6,17 +6,24 @@ using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
 using UnityEngine.SocialPlatforms.Impl;
 
-public class Ellen_Movement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     //Public Variables
     public ScoreController scoreController;
     public GameOverController gameOverController;
     public Animator anime;
-    public int health = 100;
     public float height = 2;
     public int score;
     public int walkSpeed;
     public int sprintSpeed;
+<<<<<<< HEAD:Assets/Game Assets/AY_Scripts/Ellen_Movement.cs
+=======
+
+    [HideInInspector]
+    public int health = 100;
+    public int levelIndex;
+    public int score;
+>>>>>>> d1094e4... Re-Modelled the whole lobby scene:Assets/Game Assets/AY_Scripts/PlayerController.cs
     public float boxCollider2dCrouchSizeX = 0.89f;
     public float boxCollider2dCrouchSizeY = 1.32f;
     public float boxCollider2dCrouchOffsetX = -0.12f;
@@ -35,42 +42,17 @@ public class Ellen_Movement : MonoBehaviour
     private int Jump_Count_Check;
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
-    private Collision2D collision;
     private BoxCollider2D box_collider2D;
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer.Equals(groundLayer) && !anime.GetBool("Death"))
-        {
-            anime.SetBool("OnGround", true);
-            Jump_Count_Check = 0;
-            anime.Play("Ellen_Ground_Trigger", -1, 0f); 
-        }
-        else if (collision.gameObject.layer.Equals(deathLine))
-        {
-            gameOverController.GameOverOverlay();
-            anime.SetBool("Death", true);
-            /*SceneManager.LoadScene(SceneManager.GetActiveScene().name);*/
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer.Equals(groundLayer))
-        {
-            anime.SetBool("OnGround", false);
-        }
-    }
 
     private void Awake()
     {
         PlayerPrefs.GetInt("PlayerLives", health);
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         box_collider2D = GetComponent<BoxCollider2D>();
-        rigidBody2d = GetComponentInParent<Rigidbody2D>();
+        rigidBody2d = GetComponent<Rigidbody2D>();
+
     }
 
-    // Update is called once per frame
     private void Update()
     {
         if (!anime.GetBool("Death"))
@@ -104,17 +86,17 @@ public class Ellen_Movement : MonoBehaviour
     {
         if (Jump_Count_Check < 2)
         {
-            if (Input.GetKeyDown(KeyCode.Space) && anime.GetBool("OnGround") && Jump_Count_Check < 2)
+            if (isJumpKeyPressed() && isOnGround())
             {
                 anime.SetBool("First_Jump", true);
-                rigidBody2d.AddForce(transform.parent.up * height, ForceMode2D.Force);
+                rigidBody2d.AddForce(transform.up * height, ForceMode2D.Force);
                 anime.SetBool("OnGround", false);
                 Jump_Count_Check++;
             }
-            else if (Input.GetKeyDown(KeyCode.Space) && !anime.GetBool("OnGround") && (Jump_Count_Check < 2 && Jump_Count_Check > 0))
+            else if (isJumpKeyPressed() && !isOnGround() && isSecondJump())
             {
                 anime.SetBool("First_Jump", true);
-                rigidBody2d.AddForce(transform.parent.up * height, ForceMode2D.Force);
+                rigidBody2d.AddForce(transform.up * height, ForceMode2D.Force);
                 Jump_Count_Check++;
             }
         }
@@ -124,10 +106,38 @@ public class Ellen_Movement : MonoBehaviour
         }
     }
 
+    private bool isJumpKeyPressed()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    private bool isOnGround()
+    {
+        if (anime.GetBool("OnGround"))
+            return true;
+        else
+            return false;
+    }
+
+    private bool isSecondJump()
+    {
+        if (Jump_Count_Check > 0)
+            return true;
+        else
+            return false;
+    }
+
     private void HorzMovement()
     {
         float horzSpeed = 0.5f;
-        if(Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             horzSpeed = 1;
             speed = sprintSpeed;
@@ -143,9 +153,9 @@ public class Ellen_Movement : MonoBehaviour
         }
         anime.SetFloat("Speed", horzSpeed);
         Direction(directionControl);
-        Vector2 pos = transform.parent.position;
+        Vector2 pos = transform.position;
         pos.x += directionControl * speed * Time.deltaTime;
-        transform.parent.position = pos;
+        transform.position = pos;
     }
 
     private void Direction(float x)
@@ -168,7 +178,7 @@ public class Ellen_Movement : MonoBehaviour
     public void DecreaseHealth(int decreaseHealthBy)
     {
         health -= decreaseHealthBy;
-        if(health <= 0)
+        if (health <= 0)
         {
             KillPlayer();
         }
@@ -179,6 +189,32 @@ public class Ellen_Movement : MonoBehaviour
         anime.Play("Ellen_Death", -1, 0f);
         anime.SetBool("Death", true);
         rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+        PlayerPrefs.SetInt("LastLevel", SceneManager.GetActiveScene().buildIndex);
+        Debug.Log("Index : " + SceneManager.GetActiveScene().buildIndex);
+        gameOverController.playerDead = true;
         gameOverController.GameOverOverlay();
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer.Equals(groundLayer) && !anime.GetBool("Death"))
+        {
+            anime.SetBool("OnGround", true);
+            Jump_Count_Check = 0;
+            anime.Play("Ellen_Ground_Trigger", -1, 0f);
+        }
+        else if (collision.gameObject.layer.Equals(deathLine))
+        {
+            KillPlayer();
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer.Equals(groundLayer))
+        {
+            anime.SetBool("OnGround", false);
+        }
+    }
+
 }

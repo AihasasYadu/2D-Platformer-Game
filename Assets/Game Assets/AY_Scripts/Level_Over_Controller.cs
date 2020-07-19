@@ -8,9 +8,9 @@ public class Level_Over_Controller : MonoBehaviour
     public string nextScene;
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<Ellen_Movement>() != null)
+        if (collision.gameObject.GetComponent<PlayerController>() != null)
         {
-            Ellen_Movement characterScript = collision.gameObject.GetComponentInChildren<Ellen_Movement>();
+            PlayerController characterScript = collision.gameObject.GetComponentInChildren<PlayerController>();
             PlayerPrefs.SetInt("PlayerHealth", characterScript.health);
             PlayerPrefs.SetInt("CurrentScore", characterScript.score);
             SceneManager.LoadScene(nextScene);

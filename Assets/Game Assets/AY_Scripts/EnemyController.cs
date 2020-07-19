@@ -10,28 +10,23 @@ public class EnemyController : MonoBehaviour
     public GameObject player;
     private Vector2 pos;
     private Animator chomperAnim;
+<<<<<<< HEAD
     public int directionControl;
+=======
+>>>>>>> d1094e4... Re-Modelled the whole lobby scene
     private int movementLimit = 12;
-    private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
     private int playerLayer = 8;
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.GetComponentInChildren<Ellen_Movement>() != null)
+        if (collision.gameObject.GetComponentInChildren<PlayerController>() != null)
         {
-            Ellen_Movement gameCharacter = collision.gameObject.GetComponentInChildren<Ellen_Movement>();
+            PlayerController gameCharacter = collision.gameObject.GetComponentInChildren<PlayerController>();
             gameCharacter.DecreaseHealth(weakenPlayerBy);
         }
         else if(collision.gameObject.layer.Equals(movementLimit))
         {
-            if(directionControl == 1)
-            {
-                directionControl = -1;
-            }
-            else if(directionControl == -1)
-            {
-                directionControl = 1;
-            }
+            directionControl *= -1;
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -54,16 +49,13 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
-        //characterScript = GetComponent<Ellen_Movement>();
         chomperAnim = GetComponent<Animator>();
-        rigidBody2d = GetComponent<Rigidbody2D>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
-        characterScript = player.GetComponent<Ellen_Movement>();
     }
 
     private void Update()
     {
-        if (/*characterScript.health > 0 && */!chomperAnim.GetBool("isCharacterNear"))
+        if (!chomperAnim.GetBool("isCharacterNear"))
         {
             Move();
         }
