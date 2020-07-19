@@ -13,17 +13,13 @@ public class PlayerController : MonoBehaviour
     public GameOverController gameOverController;
     public Animator anime;
     public float height = 2;
-    public int score;
     public int walkSpeed;
     public int sprintSpeed;
-<<<<<<< HEAD:Assets/Game Assets/AY_Scripts/Ellen_Movement.cs
-=======
 
     [HideInInspector]
     public int health = 100;
     public int levelIndex;
     public int score;
->>>>>>> d1094e4... Re-Modelled the whole lobby scene:Assets/Game Assets/AY_Scripts/PlayerController.cs
     public float boxCollider2dCrouchSizeX = 0.89f;
     public float boxCollider2dCrouchSizeY = 1.32f;
     public float boxCollider2dCrouchOffsetX = -0.12f;
