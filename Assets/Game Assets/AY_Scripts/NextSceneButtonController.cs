@@ -8,6 +8,8 @@ public class NextSceneButtonController : MonoBehaviour
 {
     public PlayerController characterScript;
     private Button button;
+    private string prefabHealth = "PlayerHealth";
+    private string prefabScore = "CurrentScore";
     [HideInInspector] public bool buttonClicked;
     private void Awake()
     {
@@ -27,8 +29,9 @@ public class NextSceneButtonController : MonoBehaviour
     {
         Scene currentScene = SceneManager.GetActiveScene();
         int nextSceneIndex = currentScene.buildIndex + 1;
-        PlayerPrefs.SetInt("PlayerHealth", characterScript.health);
-        PlayerPrefs.SetInt("CurrentScore", characterScript.score);
+        PlayerPrefs.SetInt(prefabHealth, characterScript.health);
+        PlayerPrefs.SetInt(prefabScore, characterScript.score);
+        FindObjectOfType<AudioManagerController>().sounds[0].source.volume = 0.5f;
         SceneManager.LoadScene(nextSceneIndex);
     }
 }

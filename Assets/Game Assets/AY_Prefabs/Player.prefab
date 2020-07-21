@@ -247,9 +247,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 161352095a390494ba7ab6479b978b92, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioManager: {fileID: 0}
   scoreController: {fileID: 0}
   gameOverController: {fileID: 0}
-  anime: {fileID: 0}
   height: 350
   walkSpeed: 5
   sprintSpeed: 10
@@ -264,3 +264,4 @@ MonoBehaviour:
   boxCollider2dSizeY: 2.07
   boxCollider2dOffsetX: 0.021
   boxCollider2dOffsetY: 0.95
+  freeze: 0

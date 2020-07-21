@@ -14,10 +14,11 @@ public class EnemyController : MonoBehaviour
     //Private Variables
     private Vector2 pos;
     private Animator chomperAnim;
-    private PlayerController characterScript;
     private int movementLimit = 12;
     private SpriteRenderer mySpriteRenderer;
     private int playerLayer = 8;
+    private string characterNearCondition = "isCharacterNear";
+    private string speedAnimParameter = "Speed";
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.GetComponentInChildren<PlayerController>() != null)
@@ -34,7 +35,7 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.layer.Equals(playerLayer))
         {
-            chomperAnim.SetBool("isCharacterNear", true);
+            chomperAnim.SetBool(characterNearCondition, true);
             PlayerDirection();
             Direction(directionControl);
         }
@@ -44,7 +45,7 @@ public class EnemyController : MonoBehaviour
     {
         if (collision.gameObject.layer.Equals(playerLayer))
         {
-            chomperAnim.SetBool("isCharacterNear", false);
+            chomperAnim.SetBool(characterNearCondition, false);
         }
     }
 
@@ -56,12 +57,18 @@ public class EnemyController : MonoBehaviour
 
     private void Update()
     {
-        if (!chomperAnim.GetBool("isCharacterNear"))
+        if (!isCharacterNear())
         {
             Move();
         }
     }
-
+    private bool isCharacterNear()
+    {
+        if (chomperAnim.GetBool(characterNearCondition))
+            return true;
+        else
+            return false;
+    }
     private void PlayerDirection()
     {
         if((transform.position.x - player.transform.position.x) < 0)
@@ -92,6 +99,6 @@ public class EnemyController : MonoBehaviour
         pos.x += directionControl * enemySpeed * Time.deltaTime;
         transform.position = pos;
         Direction(directionControl);
-        chomperAnim.SetInteger("Speed", enemySpeed);
+        chomperAnim.SetInteger(speedAnimParameter, enemySpeed);
     }
 }

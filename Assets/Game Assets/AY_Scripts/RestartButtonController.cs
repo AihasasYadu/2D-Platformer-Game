@@ -8,26 +8,24 @@ using UnityEngine.UI;
 public class RestartButtonController : MonoBehaviour
 {
     private Button button;
-    [HideInInspector] public bool buttonClicked;
+    private string prefabHealth = "PlayerHealth";
+    private string prefabScore = "CurrentScore";
     private void Awake()
     {
-        buttonClicked = false;
         button = GetComponent<Button>();
-        button.onClick.AddListener(delegate { buttonClicked = true; });
-    }
-
-    private void Update()
-    {
-        if(buttonClicked)
-        {
-            ReloadLevel();
-        }
+        button.onClick.AddListener(ReloadLevel);
     }
     private void ReloadLevel()
     {
-        PlayerPrefs.SetInt("PlayerHealth", 100);
-        PlayerPrefs.SetInt("CurrentScore", 0);
+        PlayerPrefs.SetInt(prefabHealth, 100);
+        PlayerPrefs.SetInt(prefabScore, 0);
         Scene currentScene = SceneManager.GetActiveScene();
+        SetThemeAudioVolume();
         SceneManager.LoadScene(currentScene.buildIndex);
+    }
+    private void SetThemeAudioVolume()
+    {
+        if(AudioManagerController.Instance != null)
+            FindObjectOfType<AudioManagerController>().sounds[0].source.volume = 0.5f;
     }
 }

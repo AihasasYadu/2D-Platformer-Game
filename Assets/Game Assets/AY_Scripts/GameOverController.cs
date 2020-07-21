@@ -7,20 +7,19 @@ using UnityEngine.UI;
 
 public class GameOverController : MonoBehaviour
 {
-    public PlayerController gameCharacter;
     public int gameOverOverlayDirection = 1;
     public int buttonOverlaySpeed;
     public Button restartButton;
     public Button lobbyButton;
     public bool playerDead;
-    private Image gameOver;
     private Animator gameOverAnim;
     private bool positioned;
     private bool gameOverIMG_Positoned;
+    private string gameOverSound = "GameOverSound";
+    private string gameOverEntryAnim = "GameOverEntrance";
 
     private void Start()
     {
-        gameOver = GetComponent<Image>();
         gameOverAnim = GetComponent<Animator>();
         positioned = false;
         gameOverIMG_Positoned = false;
@@ -38,9 +37,12 @@ public class GameOverController : MonoBehaviour
     {
         if (!gameOverIMG_Positoned)
         {
-            gameOverAnim.Play("GameOverEntrance", -1, 0f);
-            Debug.Log("Positioned");
+            gameOverAnim.Play(gameOverEntryAnim, -1, 0f);
             gameOverIMG_Positoned = !gameOverIMG_Positoned;
+            AudioManagerController a = FindObjectOfType<AudioManagerController>();
+            a.Play(gameOverSound);
+            a.sounds[0].source.volume = 0;
+            Destroy(AudioManagerController.Instance);
         }
         RestartButtonTransition();
         LobbyButtonTransition();

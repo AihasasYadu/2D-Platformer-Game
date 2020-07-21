@@ -8,6 +8,10 @@ public class LevelLoader : MonoBehaviour
 {
     private Button button;
     public string levelName;
+    public Image popUpLevelLocked;
+    private string prefabHealth = "PlayerHealth";
+    private string prefabScore = "CurrentScore";
+    private string lockedLevelPopUpSound = "LockedLevelSound";
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -19,8 +23,11 @@ public class LevelLoader : MonoBehaviour
         switch(levelStatus)
         {
             case LevelStatus.Locked:
-                Debug.Log("Level Locked");
-                break;
+                {
+                    FindObjectOfType<AudioManagerController>().Play(lockedLevelPopUpSound);
+                    popUpLevelLocked.gameObject.SetActive(true);
+                    break;
+                }
             case LevelStatus.Unlocked:
                 LoadLevel();
                 break;
@@ -33,8 +40,10 @@ public class LevelLoader : MonoBehaviour
 
     private void LoadLevel()
     {
-        PlayerPrefs.SetInt("PlayerHealth", 100);
-        PlayerPrefs.SetInt("CurrentScore", 0);
+        PlayerPrefs.SetInt(prefabHealth, 100);
+        PlayerPrefs.SetInt(prefabScore, 0);
+        FindObjectOfType<AudioManagerController>().sounds[0].source.volume = 0;
+        Destroy(AudioManagerController.Instance);
         SceneManager.LoadScene(levelName);
     }
 }

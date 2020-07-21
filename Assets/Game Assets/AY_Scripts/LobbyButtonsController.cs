@@ -10,16 +10,14 @@ public class LobbyButtonsController : MonoBehaviour, IPointerEnterHandler, IPoin
     public bool outOfCanvas;
     public bool isFroward;
     private Button button;
-    private void Awake()
-    {
-
-    }
+    private string quitButton = "Quit";
+    private string mouseHoverAnimCondition = "MouseHover";
     private void Start()
     {
         outOfCanvas = true;
         isFroward = false;
         button = gameObject.GetComponent<Button>();
-        button.onClick.AddListener(delegate { outOfCanvas = false; });
+        button.onClick.AddListener(OutOfCanvas);
     }
     private void Update()
     {
@@ -27,10 +25,15 @@ public class LobbyButtonsController : MonoBehaviour, IPointerEnterHandler, IPoin
         {
             Move();
         }
-        if(button.transform.position.x > 1000)
+        if(button.transform.position.x > 2000)
         {
             gameObject.SetActive(false);
         }
+    }
+    private void OutOfCanvas()
+    {
+        if(gameObject.name != quitButton)
+            outOfCanvas = false;
     }
     public void Move()
     {
@@ -40,11 +43,11 @@ public class LobbyButtonsController : MonoBehaviour, IPointerEnterHandler, IPoin
     }
     public void OnPointerEnter(PointerEventData data)
     {
-        GetComponent<Animator>().SetBool("MouseHover", true);
+        GetComponent<Animator>().SetBool(mouseHoverAnimCondition, true);
     }
     public void OnPointerExit(PointerEventData data)
     {
-        GetComponent<Animator>().SetBool("MouseHover", false);
+        GetComponent<Animator>().SetBool(mouseHoverAnimCondition, false);
     }
 
 }

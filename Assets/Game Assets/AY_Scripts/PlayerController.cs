@@ -39,10 +39,28 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
     private BoxCollider2D box_collider2D;
+    /*-------------------------------------------------------------*/
+    //Animation Variables
+    private string onGroundAnimParameter = "OnGround";
+    private string deathAnimParameter = "Death";
+    private string deathAnimName = "Ellen_Death";
+    private string crouchAnimParameter = "isCrouch";
+    private string crouchAnimName = "Ellen_Crouch";
+    private string groundTriggeredAnimName = "Ellen_Ground_Trigger";
+    private string firstJumpAnimParameter = "First_Jump";
+    private string speedAnimParameter = "Speed";
+    /*-------------------------------------------------------------*/
+    //Prefab Variables
+    private string prefabHealth = "PlayerHealth";
+    private string prefabLevel = "LastLevel";
+    /*-------------------------------------------------------------*/
+    //Audio Names
+    private string gameOverSound = "GameOverSound";
+    private string landingSound = "LandingSound";
 
     private void Awake()
     {
-        PlayerPrefs.GetInt("PlayerLives", health);
+        health = PlayerPrefs.GetInt(prefabHealth, 100);
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         box_collider2D = GetComponent<BoxCollider2D>();
         rigidBody2d = GetComponent<Rigidbody2D>();
@@ -52,7 +70,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (!anime.GetBool("Death") && !freeze)
+        if (!anime.GetBool(deathAnimParameter) && !freeze)
         {
             HorzMovement();
             Jump();
@@ -60,7 +78,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            anime.Play("Ellen_Idle", -1, 0f);
             FreezePlayer();
         }
     }
@@ -69,14 +86,14 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            anime.SetBool("isCrouch", !anime.GetBool("isCrouch"));
-            if (anime.GetBool("isCrouch") == true)
+            anime.SetBool(crouchAnimParameter, !anime.GetBool(crouchAnimParameter));
+            if (anime.GetBool(crouchAnimParameter) == true)
             {
-                anime.Play("Ellen_Crouch", -1, 0f);
+                anime.Play(crouchAnimName, -1, 0f);
                 box_collider2D.size = new Vector2(boxCollider2dCrouchSizeX, boxCollider2dCrouchSizeY);
                 box_collider2D.offset = new Vector2(boxCollider2dCrouchOffsetX, boxCollider2dCrouchOffsetY);
             }
-            if (anime.GetBool("isCrouch") == false)
+            if (anime.GetBool(crouchAnimParameter) == false)
             {
                 box_collider2D.size = new Vector2(boxCollider2dSizeX, boxCollider2dSizeY);
                 box_collider2D.offset = new Vector2(boxCollider2dOffsetX, boxCollider2dOffsetY);
@@ -90,14 +107,14 @@ public class PlayerController : MonoBehaviour
         {
             if (isJumpKeyPressed() && isOnGround())
             {
-                anime.SetBool("First_Jump", true);
+                anime.SetBool(firstJumpAnimParameter, true);
                 rigidBody2d.AddForce(transform.up * height, ForceMode2D.Force);
-                anime.SetBool("OnGround", false);
+                anime.SetBool(onGroundAnimParameter, false);
                 Jump_Count_Check++;
             }
             else if (isJumpKeyPressed() && !isOnGround() && isSecondJump())
             {
-                anime.SetBool("First_Jump", true);
+                anime.SetBool(firstJumpAnimParameter, true);
                 rigidBody2d.AddForce(transform.up * height, ForceMode2D.Force);
                 Jump_Count_Check++;
             }
@@ -122,7 +139,7 @@ public class PlayerController : MonoBehaviour
 
     private bool isOnGround()
     {
-        if (anime.GetBool("OnGround"))
+        if (anime.GetBool(onGroundAnimParameter))
             return true;
         else
             return false;
@@ -153,7 +170,7 @@ public class PlayerController : MonoBehaviour
         {
             horzSpeed = 0;
         }
-        anime.SetFloat("Speed", horzSpeed);
+        anime.SetFloat(speedAnimParameter, horzSpeed);
         Direction(directionControl);
         Vector2 pos = transform.position;
         pos.x += directionControl * speed * Time.deltaTime;
@@ -188,25 +205,28 @@ public class PlayerController : MonoBehaviour
 
     private void KillPlayer()
     {
-        anime.Play("Ellen_Death", -1, 0f);
-        anime.SetBool("Death", true);
+        anime.Play(deathAnimName, -1, 0f);
+        anime.SetBool(deathAnimParameter, true);
         FreezePlayer();
-        PlayerPrefs.SetInt("LastLevel", SceneManager.GetActiveScene().buildIndex);
+        PlayerPrefs.SetInt(prefabLevel, SceneManager.GetActiveScene().buildIndex);
         gameOverController.playerDead = true;
+        FindObjectOfType<AudioManagerController>().Play(gameOverSound);
         gameOverController.GameOverOverlay();
     }
     public void FreezePlayer()
     {
-        rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
+        rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
+        rigidBody2d.gravityScale = 0;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.layer.Equals(groundLayer) && !anime.GetBool("Death"))
+        if (collision.gameObject.layer.Equals(groundLayer) && !anime.GetBool(deathAnimParameter))
         {
-            anime.SetBool("OnGround", true);
+            anime.SetBool(onGroundAnimParameter, true);
+            FindObjectOfType<AudioManagerController>().Play(landingSound);
             Jump_Count_Check = 0;
-            anime.Play("Ellen_Ground_Trigger", -1, 0f);
+            anime.Play(groundTriggeredAnimName, -1, 0f);
         }
         else if (collision.gameObject.layer.Equals(deathLine))
         {
@@ -218,7 +238,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.layer.Equals(groundLayer))
         {
-            anime.SetBool("OnGround", false);
+            anime.SetBool(onGroundAnimParameter, false);
         }
     }
 

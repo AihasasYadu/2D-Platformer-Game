@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5769806669185621902
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5769806669185621903}
+  - component: {fileID: 5769806670197551131}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!4 &5769806669185621903
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5769806669185621902}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.7046381, y: 2.970202, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5769806670197551131
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5769806669185621902}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70cddd76517171248919e2290534c085, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - source: {fileID: 0}
+    name: Theme
+    clip: {fileID: 8300000, guid: 80b3ef1d597070344ae8c4ada03bfd71, type: 3}
+    volume: 0.34
+    pitch: 1
+    loop: 1
+  - source: {fileID: 0}
+    name: KeyPick
+    clip: {fileID: 8300000, guid: a4dc23583fb1dc84a89049f88b06efe8, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+  - source: {fileID: 0}
+    name: GameOverSound
+    clip: {fileID: 8300000, guid: 98688d3d005c5f044a51fb995785bda9, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+  - source: {fileID: 0}
+    name: LevelCompleteSound
+    clip: {fileID: 8300000, guid: d430e8ea5e184204a9825c11ccc369b9, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+  - source: {fileID: 0}
+    name: LandingSound
+    clip: {fileID: 8300000, guid: ed617b6d63e942b43855391be6a8312c, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0

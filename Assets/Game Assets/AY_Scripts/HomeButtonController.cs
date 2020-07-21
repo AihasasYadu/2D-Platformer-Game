@@ -7,23 +7,14 @@ using UnityEngine.UI;
 public class HomeButtonController : MonoBehaviour
 {
     private Button button;
-    [HideInInspector] public bool buttonClicked;
     private void Awake()
     {
-        buttonClicked = false;
         button = GetComponent<Button>();
-        button.onClick.AddListener(delegate { buttonClicked = true; });
-    }
-
-    private void Update()
-    {
-        if (buttonClicked)
-        {
-            LoadLobby();
-        }
+        button.onClick.AddListener(LoadLobby);
     }
     private void LoadLobby()
     {
+        Destroy(AudioManagerController.Instance);
         SceneManager.LoadScene(0);
     }
 }

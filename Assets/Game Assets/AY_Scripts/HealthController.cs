@@ -7,10 +7,10 @@ public class HealthController : MonoBehaviour
 {
     private TextMeshProUGUI healthText;
     public PlayerController gameCharacter;
-
+    private string prefabHealth = "PlayerHealth";
     private void Awake()
     {
-        gameCharacter.health = PlayerPrefs.GetInt("PlayerHealth");
+        gameCharacter.health = PlayerPrefs.GetInt(prefabHealth, 100);
     }
     private void Start()
     {
