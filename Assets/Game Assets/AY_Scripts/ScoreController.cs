@@ -12,11 +12,9 @@ public class ScoreController : MonoBehaviour
     //Private Variables
     private TextMeshProUGUI scoreText;
     private int score = 0;
-    private string prefabScore = "CurrentScore";
 
     private void Awake()
     {
-        characterScript.score = PlayerPrefs.GetInt(prefabScore);
         score = characterScript.score;
     }
     private void Start()

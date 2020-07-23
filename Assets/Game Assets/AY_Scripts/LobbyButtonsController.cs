@@ -6,48 +6,43 @@ using UnityEngine.UI;
 
 public class LobbyButtonsController : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    [HideInInspector]
-    public bool outOfCanvas;
-    public bool isFroward;
-    private Button button;
-    private string quitButton = "Quit";
-    private string mouseHoverAnimCondition = "MouseHover";
-    private void Start()
+    private Hashtable hashTable = new Hashtable();
+    private int buttonNewScale = 5;
+    private int buttonOldScale = 4;
+    private void Awake()
     {
-        outOfCanvas = true;
-        isFroward = false;
-        button = gameObject.GetComponent<Button>();
-        button.onClick.AddListener(OutOfCanvas);
+        gameObject.GetComponent<Button>().onClick.AddListener(PlayButtonClickSound);
     }
-    private void Update()
+    private void PlayButtonClickSound()
     {
-        if (!outOfCanvas)
-        {
-            Move();
-        }
-        if(button.transform.position.x > 2000)
-        {
-            gameObject.SetActive(false);
-        }
+        AudioManagerController.Instance.Play(AudioTitles.ButtonClick);
     }
-    private void OutOfCanvas()
+    private void ScaleButtonUp()
     {
-        if(gameObject.name != quitButton)
-            outOfCanvas = false;
+        hashTable.Clear();
+        hashTable.Add("x", buttonNewScale);
+        hashTable.Add("y", buttonNewScale);
+        hashTable.Add("time", 1);
+        hashTable.Add("easetype", iTween.EaseType.easeOutBounce);
     }
-    public void Move()
+    private void ScaleButtonBackToNormal()
     {
-        Vector2 pos = transform.position;
-        pos.x += 1 * 1000 * Time.deltaTime;
-        transform.position = pos;
+        hashTable.Clear();
+        hashTable.Add("x", buttonOldScale);
+        hashTable.Add("y", buttonOldScale);
+        hashTable.Add("time", 1);
+        hashTable.Add("easetype", iTween.EaseType.easeOutBounce);
     }
+
     public void OnPointerEnter(PointerEventData data)
     {
-        GetComponent<Animator>().SetBool(mouseHoverAnimCondition, true);
+        ScaleButtonUp();
+        iTween.ScaleTo(gameObject, hashTable);
     }
     public void OnPointerExit(PointerEventData data)
     {
-        GetComponent<Animator>().SetBool(mouseHoverAnimCondition, false);
+        ScaleButtonBackToNormal();
+        iTween.ScaleTo(gameObject, hashTable);
     }
 
 }

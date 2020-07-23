@@ -6,15 +6,13 @@ using UnityEngine.UI;
 
 public class PopUpController : MonoBehaviour
 {
-    public Button unclickedButton;
-    private Image popUpImg;
+    public Button closeButton;
     private void Awake()
     {
-        popUpImg = GetComponent<Image>();
-        unclickedButton.onClick.AddListener(SwitchButtons);
+        closeButton.onClick.AddListener(DisablePopUp);
     }
-    private void SwitchButtons()
+    private void DisablePopUp()
     {
-        popUpImg.gameObject.SetActive(false);
+        this.gameObject.SetActive(false);
     }
 }

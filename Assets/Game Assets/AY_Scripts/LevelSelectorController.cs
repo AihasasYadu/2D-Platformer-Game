@@ -5,37 +5,21 @@ using UnityEngine.UI;
 
 public class LevelSelectorController : MonoBehaviour
 {
-    public int levelSelectorSpeed;
-
-    [HideInInspector]
-    public bool isButtonClicked;
-    private Image levelSelector;
-    private Vector2 pos;
-
+    public Button levelSelectButton;
+    public Button closeButton;
+    private int imgNewScale = 1;
+    private int imgOldScale = 0;
     private void Start()
     {
-        levelSelector = gameObject.GetComponent<Image>();
-        pos = levelSelector.rectTransform.localPosition;
+        levelSelectButton.onClick.AddListener(ScaleImageUp);
+        closeButton.onClick.AddListener(ScaleImageToNormal);
     }
-    void Update()
+    private void ScaleImageUp()
     {
-        if(!isInCenter() && isButtonClicked)
-        Move();
+        iTween.ScaleTo(gameObject, iTween.Hash("x", imgNewScale, "y", imgNewScale, "time", 1, "easetype", iTween.EaseType.easeOutBounce));
     }
-    private void Move()
+    private void ScaleImageToNormal()
     {
-        pos.x += 1 * levelSelectorSpeed * Time.deltaTime;
-        levelSelector.rectTransform.localPosition = pos;
-    }
-    private bool isInCenter()
-    {
-        bool returnedValue = false;
-        if(levelSelector.rectTransform.localPosition.x > -5)
-        {
-            pos.x = 0;
-            levelSelector.rectTransform.localPosition = pos;
-            returnedValue = true;
-        }
-        return returnedValue;
+        iTween.ScaleTo(gameObject, iTween.Hash("x", imgOldScale, "y", imgOldScale, "time", 1, "easetype", iTween.EaseType.easeOutSine));
     }
 }

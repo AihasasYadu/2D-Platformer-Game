@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     public int walkSpeed;
     public int sprintSpeed;
 
-    [HideInInspector] public int health = 100;
+    [HideInInspector] public int health;
     [HideInInspector] public int levelIndex;
     [HideInInspector] public int score;
     [HideInInspector] public float boxCollider2dCrouchSizeX = 0.89f;
@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     [HideInInspector] public float boxCollider2dOffsetX = 0.021f;
     [HideInInspector] public float boxCollider2dOffsetY = 0.95f;
     [HideInInspector] public bool freeze;
+    [HideInInspector] public bool nextLevelReached;
     /*-------------------------------------------------------------*/
 
     //Private Variables
@@ -53,19 +54,21 @@ public class PlayerController : MonoBehaviour
     //Prefab Variables
     private string prefabHealth = "PlayerHealth";
     private string prefabLevel = "LastLevel";
+    private string prefabScore = "CurrentScore";
     /*-------------------------------------------------------------*/
-    //Audio Names
-    private string gameOverSound = "GameOverSound";
-    private string landingSound = "LandingSound";
 
     private void Awake()
     {
         health = PlayerPrefs.GetInt(prefabHealth, 100);
+        score = PlayerPrefs.GetInt(prefabScore, 0);
+        levelIndex = PlayerPrefs.GetInt(prefabLevel, 0);
+        AudioManagerController.Instance.Play(AudioTitles.SceneTheme);
         mySpriteRenderer = GetComponent<SpriteRenderer>();
         box_collider2D = GetComponent<BoxCollider2D>();
         rigidBody2d = GetComponent<Rigidbody2D>();
         anime = GetComponent<Animator>();
         freeze = false;
+        nextLevelReached = false;
     }
 
     private void Update()
@@ -208,15 +211,14 @@ public class PlayerController : MonoBehaviour
         anime.Play(deathAnimName, -1, 0f);
         anime.SetBool(deathAnimParameter, true);
         FreezePlayer();
-        PlayerPrefs.SetInt(prefabLevel, SceneManager.GetActiveScene().buildIndex);
-        gameOverController.playerDead = true;
-        FindObjectOfType<AudioManagerController>().Play(gameOverSound);
         gameOverController.GameOverOverlay();
+        AudioManagerController.Instance.Play(AudioTitles.GameOver);
     }
     public void FreezePlayer()
     {
         rigidBody2d.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionY;
         rigidBody2d.gravityScale = 0;
+        AudioManagerController.Instance.Stop(AudioTitles.SceneTheme);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -224,7 +226,7 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.layer.Equals(groundLayer) && !anime.GetBool(deathAnimParameter))
         {
             anime.SetBool(onGroundAnimParameter, true);
-            FindObjectOfType<AudioManagerController>().Play(landingSound);
+            AudioManagerController.Instance.Play(AudioTitles.LandingSound);
             Jump_Count_Check = 0;
             anime.Play(groundTriggeredAnimName, -1, 0f);
         }
@@ -239,6 +241,22 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.layer.Equals(groundLayer))
         {
             anime.SetBool(onGroundAnimParameter, false);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (nextLevelReached)
+        {
+            PlayerPrefs.SetInt(prefabHealth, health);
+            PlayerPrefs.SetInt(prefabScore, score);
+            PlayerPrefs.SetInt(prefabLevel, SceneManager.GetActiveScene().buildIndex + 1);
+        }
+        else
+        {
+            PlayerPrefs.SetInt(prefabHealth, 100);
+            PlayerPrefs.SetInt(prefabScore, 0);
+            PlayerPrefs.SetInt(prefabLevel, SceneManager.GetActiveScene().buildIndex);
         }
     }
 

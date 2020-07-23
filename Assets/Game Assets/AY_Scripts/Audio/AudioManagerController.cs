@@ -7,9 +7,8 @@ using System;
 
 public class AudioManagerController : MonoBehaviour
 {
-    public Sound[] sounds;
+    public Sound[] soundArray;
     private static AudioManagerController instance;
-    private string themeMusicName = "Theme";
     public static AudioManagerController Instance { get { return instance; } }
     void Awake()
     {
@@ -22,7 +21,7 @@ public class AudioManagerController : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        foreach (Sound s in sounds)
+        foreach (Sound s in soundArray)
         {
             s.source = gameObject.AddComponent<AudioSource>();
             s.source.clip = s.clip;
@@ -33,18 +32,34 @@ public class AudioManagerController : MonoBehaviour
 
         }   
     }
-    private void Start()
+    public void Play(AudioTitles audio)
     {
-        Play(themeMusicName);
-    }
-    public void Play(string name)
-    {
-        Sound s = Array.Find(sounds, sound => sound.name == name);
-        if(s == null)
+        Sound sound = GetTitleName(audio);
+        if(sound == null)
         {
             Debug.Log("Incorrect File Name/File Not Found : " + name);
             return;
         }
-        s.source.Play();
+        sound.source.Play();
     }  
+    private Sound GetTitleName(AudioTitles a)
+    {
+        Sound s = Array.Find(soundArray, sound => sound.name.Equals(a.ToString()));
+        return s;
+    }
+    public void Mute(AudioTitles audio)
+    {
+        Sound sound = GetTitleName(audio);
+        sound.source.mute = true;
+    }
+    public void Unmute(AudioTitles audio)
+    {
+        Sound sound = GetTitleName(audio);
+        sound.source.mute = false;
+    }
+    public void Stop(AudioTitles audio)
+    {
+        Sound sound = GetTitleName(audio);
+        sound.source.Stop();
+    }
 }

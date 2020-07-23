@@ -14,21 +14,15 @@ public class LobbyController : MonoBehaviour
     private string prefabHealth = "PlayerHealth";
     private string prefabScore = "CurrentScore";
     private string prefabLevel = "LastLevel";
-    private string menuButtonClickSound = "MenuButtonClickSound";
     private void Awake()
     {
         playButton.onClick.AddListener(LoadLevel);
-        levelSelectButton.onClick.AddListener(LevelSelector);
         quitButton.onClick.AddListener(QuitGame);
+        AudioManagerController.Instance.Play(AudioTitles.LobbyTheme);
     }
     private void LoadLevel()
     {
-        AudioManagerController a = FindObjectOfType<AudioManagerController>();
-        a.Play(menuButtonClickSound);
-        a.sounds[0].source.volume = 0;
-        Destroy(AudioManagerController.Instance);
-        PlayerPrefs.SetInt(prefabHealth, 100);
-        PlayerPrefs.SetInt(prefabScore, 0);
+        AudioManagerController.Instance.Stop(AudioTitles.LobbyTheme);
         int level = PlayerPrefs.GetInt(prefabLevel,1);
         while(LevelManager.Instance.GetLevelStatus(("Level " + level)) == LevelStatus.Locked)
         {
@@ -36,17 +30,8 @@ public class LobbyController : MonoBehaviour
         }
         SceneManager.LoadScene(level);
     }
-    private void LevelSelector()
-    {
-        levelSelectorIMG.GetComponent<LevelSelectorController>().isButtonClicked = true;
-        playButton.GetComponent<LobbyButtonsController>().outOfCanvas = false;
-        quitButton.GetComponent<LobbyButtonsController>().outOfCanvas = false;
-        FindObjectOfType<AudioManagerController>().Play(menuButtonClickSound);
-    }
-
     private void QuitGame()
     {
-        FindObjectOfType<AudioManagerController>().Play(menuButtonClickSound);
         Application.Quit();
     }
 }

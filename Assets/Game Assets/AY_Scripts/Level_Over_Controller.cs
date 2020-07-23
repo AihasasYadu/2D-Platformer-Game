@@ -6,24 +6,13 @@ using UnityEngine.UI;
 
 public class Level_Over_Controller : MonoBehaviour
 {
-    public Image levelFinished;
-    public Image levelCompleteGIF;
-    public int overlaySpeed;
-    private bool overlayPositioned;
+    public Animator anim;
+    public RectTransform uGuiElement;
+    public Vector2 targetPosition;
     private string levelCompleteAnimParameter = "isLevelCompleted";
-    private string prefabLevel = "LastLevel";
-    private string levelCompleteSound = "LevelCompleteSound";
     private void Start()
     {
-        overlayPositioned = true;
-        levelCompleteGIF.GetComponent<Animator>().SetBool(levelCompleteAnimParameter, false);
-    }
-    private void Update()
-    {
-        if(!overlayPositioned)
-        {
-            LevelCompleteOverlayTransition();
-        }
+        anim.SetBool(levelCompleteAnimParameter, false);
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -31,24 +20,27 @@ public class Level_Over_Controller : MonoBehaviour
         {
             PlayerController characterScript = collision.gameObject.GetComponentInChildren<PlayerController>();
             characterScript.freeze = true;
+            characterScript.nextLevelReached = true;
             LevelManager.Instance.MarkCurrentLevelComplete();
-            overlayPositioned = false;
+            AudioManagerController.Instance.Stop(AudioTitles.SceneTheme);
+            AudioManagerController.Instance.Play(AudioTitles.LevelComplete);
+            LevelCompleteOverlayTransition();
         }
     }
     private void LevelCompleteOverlayTransition()
     {
-        Vector2 pos = levelFinished.transform.localPosition;
-        pos.x += overlaySpeed * Time.deltaTime;
-        if(pos.x > -5)
-        {
-            pos.x = 0;
-            overlayPositioned = true;
-            levelCompleteGIF.GetComponent<Animator>().SetBool(levelCompleteAnimParameter, true);
-            AudioManagerController a = FindObjectOfType<AudioManagerController>();
-            a.sounds[0].source.volume = 0;
-            a.Play(levelCompleteSound);
-            PlayerPrefs.SetInt(prefabLevel, SceneManager.GetActiveScene().buildIndex + 1);
-        }
-        levelFinished.transform.localPosition = pos;
+        iTween.ValueTo(uGuiElement.gameObject, iTween.Hash(
+         "from", uGuiElement.anchoredPosition,
+         "to", targetPosition,
+         "time", 1,
+         "onupdatetarget", gameObject,
+         "onupdate", "MoveGuiElement",
+         "easetype", iTween.EaseType.easeOutCirc));
+
+         anim.SetBool(levelCompleteAnimParameter, true);
+    }
+    public void MoveGuiElement(Vector2 position)
+    {
+        uGuiElement.anchoredPosition = position;
     }
 }

@@ -14,7 +14,6 @@ public class HomeButtonController : MonoBehaviour
     }
     private void LoadLobby()
     {
-        Destroy(AudioManagerController.Instance);
         SceneManager.LoadScene(0);
     }
 }
