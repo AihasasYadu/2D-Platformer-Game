@@ -11,8 +11,6 @@ public class LobbyController : MonoBehaviour
     public Button levelSelectButton;
     public Button quitButton;
     public Image levelSelectorIMG;
-    private string prefabHealth = "PlayerHealth";
-    private string prefabScore = "CurrentScore";
     private string prefabLevel = "LastLevel";
     private void Awake()
     {
