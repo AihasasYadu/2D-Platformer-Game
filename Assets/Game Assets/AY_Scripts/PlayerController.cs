@@ -47,7 +47,6 @@ public class PlayerController : MonoBehaviour
     private string deathAnimName = "Ellen_Death";
     private string crouchAnimParameter = "isCrouch";
     private string crouchAnimName = "Ellen_Crouch";
-    private string groundTriggeredAnimName = "Ellen_Ground_Trigger";
     private string firstJumpAnimParameter = "First_Jump";
     private string speedAnimParameter = "Speed";
     /*-------------------------------------------------------------*/
@@ -228,7 +227,6 @@ public class PlayerController : MonoBehaviour
             anime.SetBool(onGroundAnimParameter, true);
             AudioManagerController.Instance.Play(AudioTitles.LandingSound);
             Jump_Count_Check = 0;
-            anime.Play(groundTriggeredAnimName, -1, 0f);
         }
         else if (collision.gameObject.layer.Equals(deathLine))
         {
