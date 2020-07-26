@@ -11,14 +11,11 @@ public class ScoreController : MonoBehaviour
 
     //Private Variables
     private TextMeshProUGUI scoreText;
-    private int score = 0;
+    private int score;
 
-    private void Awake()
-    {
-        score = characterScript.score;
-    }
     private void Start()
     {
+        score = characterScript.score;
         scoreText = GetComponent<TextMeshProUGUI>();
         scoreText.text = "Score : " + score;
     }

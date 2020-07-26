@@ -632,6 +632,8 @@ MonoBehaviour:
   - {fileID: 758499190}
   - {fileID: 15639604}
   - {fileID: 1187946953}
+  yPosition: -50
+  switchRigidBody2dOn: 0
 --- !u!1 &449728315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1539,7 +1541,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1046353758}
-  m_RootOrder: 6
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &989054229
 MonoBehaviour:
@@ -1620,13 +1622,13 @@ Transform:
   m_LocalPosition: {x: -1.404638, y: 6.360202, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 1296981958}
   - {fileID: 1910736893}
+  - {fileID: 1296981958}
   - {fileID: 1161667897}
+  - {fileID: 989054228}
   - {fileID: 6826645550994418476}
   - {fileID: 1999333937}
   - {fileID: 1945609623}
-  - {fileID: 989054228}
   - {fileID: 1385771225}
   - {fileID: 207354704}
   - {fileID: 1116522118}
@@ -2574,7 +2576,7 @@ Transform:
   m_Children:
   - {fileID: 810860791}
   m_Father: {fileID: 1046353758}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1945609623 stripped
 RectTransform:
