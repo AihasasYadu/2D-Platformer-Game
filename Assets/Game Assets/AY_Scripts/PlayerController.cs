@@ -231,6 +231,7 @@ public class PlayerController : MonoBehaviour
         else if (collision.gameObject.layer.Equals(deathLine))
         {
             KillPlayer();
+            gameObject.GetComponent<BoxCollider2D>().enabled = false;
         }
     }
 
