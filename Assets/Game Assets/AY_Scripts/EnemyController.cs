@@ -14,6 +14,7 @@ public class EnemyController : MonoBehaviour
     //Private Variables
     private Vector2 pos;
     private Animator chomperAnim;
+    private int health;
     private int movementLimit = 12;
     private SpriteRenderer mySpriteRenderer;
     private int playerLayer = 8;
@@ -29,6 +30,10 @@ public class EnemyController : MonoBehaviour
         else if(collision.gameObject.layer.Equals(movementLimit))
         {
             directionControl *= -1;
+        }
+        if (collision.gameObject.layer.Equals(14))
+        {
+            Damage(50);
         }
     }
     private void OnTriggerStay2D(Collider2D collision)
@@ -51,6 +56,7 @@ public class EnemyController : MonoBehaviour
 
     private void Start()
     {
+        health = 100;
         chomperAnim = GetComponent<Animator>();
         mySpriteRenderer = GetComponent<SpriteRenderer>();
     }
@@ -100,5 +106,21 @@ public class EnemyController : MonoBehaviour
         transform.position = pos;
         Direction(directionControl);
         chomperAnim.SetInteger(speedAnimParameter, enemySpeed);
+    }
+
+    public void Damage(int damage)
+    {
+        health -= damage;
+        if (health <= 0)
+        {
+            chomperAnim.SetBool("isDead", true);
+            StartCoroutine(Delay(1));
+            gameObject.SetActive(false);
+        }
+    }
+
+    IEnumerator Delay(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
     }
 }

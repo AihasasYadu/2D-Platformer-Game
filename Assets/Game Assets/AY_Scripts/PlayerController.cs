@@ -11,10 +11,11 @@ public class PlayerController : MonoBehaviour
     //Public Variables
     public ScoreController scoreController;
     public GameOverController gameOverController;
+    public EnemyController enemyController;
     public float height = 2;
     public int walkSpeed;
     public int sprintSpeed;
-
+    public GameObject weaponSelected;
     [HideInInspector] public int health;
     [HideInInspector] public int levelIndex;
     [HideInInspector] public int score;
@@ -31,11 +32,15 @@ public class PlayerController : MonoBehaviour
     /*-------------------------------------------------------------*/
 
     //Private Variables
+    private int weaponIndicatorXPos = -277;
     private float speed;
     private float directionControl;
     private int groundLayer = 9;
     private int deathLine = 10;
+    private int weaponsLayer = 13;
+    private int enemyLayer = 11;
     private int Jump_Count_Check;
+    private int currentWeapon = -1;
     private Animator anime;
     private Rigidbody2D rigidBody2d;
     private SpriteRenderer mySpriteRenderer;
@@ -49,12 +54,20 @@ public class PlayerController : MonoBehaviour
     private string crouchAnimName = "Ellen_Crouch";
     private string firstJumpAnimParameter = "First_Jump";
     private string speedAnimParameter = "Speed";
+    private string staffAttack = "StaffAttack";
     /*-------------------------------------------------------------*/
     //Prefab Variables
     private string prefabHealth = "PlayerHealth";
     private string prefabLevel = "LastLevel";
     private string prefabScore = "CurrentScore";
     /*-------------------------------------------------------------*/
+
+    private enum Weapons
+    {
+        Empty,
+        Staff,
+        Gun
+    }
 
     private void Awake()
     {
@@ -81,6 +94,10 @@ public class PlayerController : MonoBehaviour
         else
         {
             FreezePlayer();
+        }
+        if(currentWeapon != (int)Weapons.Empty && Input.GetKeyDown(KeyCode.F))
+        {
+            Attack();
         }
     }
 
@@ -199,9 +216,18 @@ public class PlayerController : MonoBehaviour
     public void DecreaseHealth(int decreaseHealthBy)
     {
         health -= decreaseHealthBy;
+        anime.Play("Ellen_Hurt", -1, 0f);
         if (health <= 0)
         {
             KillPlayer();
+        }
+    }
+
+    private void Attack()
+    {
+        if (currentWeapon == 1)
+        {
+            anime.SetTrigger(staffAttack);
         }
     }
 
@@ -240,6 +266,17 @@ public class PlayerController : MonoBehaviour
         if (collision.gameObject.layer.Equals(groundLayer))
         {
             anime.SetBool(onGroundAnimParameter, false);
+        }
+    }
+    
+    //Equip Staff
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.gameObject.layer.Equals(weaponsLayer) && Input.GetKeyDown(KeyCode.E))
+        {
+            currentWeapon = (int)Weapons.Staff;
+            iTween.MoveTo(weaponSelected, iTween.Hash("x", weaponIndicatorXPos, "islocal", true, "easetype", iTween.EaseType.easeInOutSine));
+            collision.gameObject.SetActive(false);
         }
     }
 

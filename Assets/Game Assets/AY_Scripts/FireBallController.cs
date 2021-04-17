@@ -7,25 +7,12 @@ public class FireBallController : MonoBehaviour
     public int speed;
     public int animationLoopStartPositionY;
     public int animationLoopEndPositionY;
-    private float x;
     private int time;
-    private bool isTransitionComplete;
     private void Start()
     {
-        x = gameObject.transform.localPosition.x;
         time = Mathf.Abs((animationLoopStartPositionY - animationLoopEndPositionY) / speed);
         ResetPosition();
-    }
-    private void Update()
-    {
-        if (gameObject.transform.localPosition.y == animationLoopStartPositionY)
-        {
-            FireBallTransition();
-        }
-        else if(gameObject.transform.localPosition.y == animationLoopEndPositionY)
-        {
-            ResetPosition();
-        }
+        FireBallTransition();
     }
     private void ResetPosition()
     {
@@ -35,10 +22,10 @@ public class FireBallController : MonoBehaviour
     }
     private void FireBallTransition()
     {
-        Debug.Log(gameObject.transform.localPosition);
         iTween.MoveTo(gameObject, iTween.Hash("y", animationLoopEndPositionY, 
             "time", time,
             "islocal", true,
+            "looptype", iTween.LoopType.loop,
             "easetype", iTween.EaseType.linear));
     }
 }
